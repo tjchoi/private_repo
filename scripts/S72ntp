@@ -1,0 +1,71 @@
+#!/bin/sh
+
+# written by inode
+# run ntpclient and update the date
+
+serverip=`nvram_get 2860 NTPServerIP`
+interval=`nvram_get 2860 NTPSync`
+timezone=`nvram_get 2860 TZ`
+
+NAME=ntpclient
+
+
+d_start () {
+# assign default values which is defined by Zaram
+	if [ "$serverip" = "" ]; then
+		serverip="220.73.142.69"
+        nvram_set 2860 NTPServerIP $serverip
+    fi
+
+	if [ "$interval" = "" ]; then
+		interval="3600"
+        nvram_set 2860 NTPSync $interval
+	fi
+
+	if [ "$timezone" = "" ]; then
+		timezone="KST_009"
+        nvram_set 2860 TZ $timezone
+	fi
+
+
+# update root file system structure for supporting timezone
+# refer to MTK SDK - "ntp.sh"
+	echo $timezone > /etc/tmpTZ
+	sed -e 's#.*_\(-*\)0*\(.*\)#GMT-\1\2#' /etc/tmpTZ > /etc/tmpTZ2
+	sed -e 's#\(.*\)--\(.*\)#\1\2#' /etc/tmpTZ2 > /etc/TZ
+	rm -rf /etc/tmpTZ
+	rm -rf /etc/tmpTZ2
+
+	ntpclient -s -c 0 -h $serverip -i $interval &
+    
+    return 0;
+}
+
+d_stop () {
+    killall -q ntpclient
+    return 0;
+}
+
+case "$1" in
+    start)
+        echo "Starting $NAME" ;
+        d_start
+        ;;
+
+    stop)
+        echo "Stopping $NAME" ;
+        d_stop
+        ;;
+
+    restart)
+        echo "Restarting $NAME" ;
+        d_stop ;
+        sleep 2 ;
+        d_start
+        ;;
+esac
+
+
+
+
+
