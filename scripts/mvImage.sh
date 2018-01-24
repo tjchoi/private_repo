@@ -1,6 +1,6 @@
 #!/bin/sh
 
-date=`date +%G-%m-%d_%k:%M`
+date=`date +%G-%m-%d_%R`
 
 cur_path=`pwd`
 
@@ -11,8 +11,8 @@ elif [ "$1" = "fpga" ];then
 	board="FPGA"
 
 else
-	echo "ERROR : wrong agument\n"
-	echo "[arg] : 'fpga' or 'asic'\n"
+	echo "ERROR : wrong agument"
+	echo "[arg] : 'fpga' or 'asic'"
 	exit
 fi
 
@@ -30,5 +30,8 @@ ln -s uImage_xgs_tjchoi_$date uImage
 
 cd $cur_path
 
-ls /tftpboot/tjchoi/XGS/$board
+ls -la /tftpboot/tjchoi/XGS/$board | grep 'uImage '
+
+mkimage -l /tftpboot/tjchoi/XGS/$board/uImage
+
 
