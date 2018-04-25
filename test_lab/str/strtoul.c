@@ -4,6 +4,7 @@
 
 int main()
 {
+#if 0
     char id[] = "0x48575443";
     char sn[] = "0x30303031";
     char *p;
@@ -21,5 +22,15 @@ int main()
     printf("vssn:0x%08x\n", vssn);
 
     return 0;
-    
+#else
+
+	char num[] = "14";
+
+	uint8_t ret;
+
+	ret = (uint8_t)strtol(num, 0, 16);
+	printf("%s => %d\n", num, ret);
+
+	return 0;
+#endif
 }
