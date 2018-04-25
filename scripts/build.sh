@@ -1,43 +1,78 @@
 #!/bin/sh
 
-if [ "$1" = "omcid" ];then
-	module="omcid"
+arg_num=$#
+arg_list=$*
+module=
+arg_miss=0
 
-elif [ "$1" = "libonu" ];then
-	module="libonu"
+show_usage() 
+{
+	echo ""
+	echo "[USAGE] : "
+	echo "Command : build.sh [arg_1] [arg_2] ... "
+	echo ""
+	echo "[Args] : module name to be build."
+	echo "			module lists) omcid, libonu, onud, drvonu, drvoptic, drvswitch"
+	echo ""
+	echo "			ex) build.sh omcid libonu "
+	echo ""
+#	exit
+}
 
-elif [ "$1" = "onud" ];then
-	module="onud"
+check_module()
+{
+	if [ "$1" = "omcid" ];then
+		module+=" omcid"
 
-elif [ "$1" = "drvonu" ];then
-	module="drvonu"
+	elif [ "$1" = "libonu" ];then
+		module+=" libonu"
+
+	elif [ "$1" = "onud" ];then
+		module+=" onud"
+
+	elif [ "$1" = "drvonu" ];then
+		module+=" drvonu"
+		
+	elif [ "$1" = "drvoptic" ];then
+		module+=" drvoptic"
+
+	elif [ "$1" = "drvswitch" ];then
+		module+=" drvswitch"
+
+	else
+		let "arg_miss += 1"
+	fi
+}
+
+# Check module name
+check_module_name()
+{
+	for i in $arg_list
+	do
+		check_module $i
+	done
+
+	if [ $arg_miss -gt 0 ]; then
+		show_usage
+	fi
+}
+
+build_module()
+{
+	for i in $module
+	do
+		make $i-dirclean ; make $i
+	done
 	
-elif [ "$1" = "drvoptic" ];then
-	module="drvoptic"
+	make
+}
 
-elif [ "$1" = "drvswitch" ];then
-	module="drvswitch"
 
-else
-	echo ""
-	echo "[HELP] : "
-	echo "Command : build.sh [arg_1] ([arg_2]) "
-	echo ""
-	echo "[Arg_1] : module name to be build."
-	echo "          ex) omcid, libonu, onud, drvonu, drvoptic, drvswitch"
-	echo ""
-	echo "[Arg_2] : (optional) make image"
-	echo "          ex) image"
-	echo ""
-	exit
-fi
+check_module_name
 
-if [ "$2" = "image" ];then
-	make $module-dirclean ; make $module ; make
+build_module
 
-else
-	make $module-dirclean ; make $module
 
-fi
+
 
 
