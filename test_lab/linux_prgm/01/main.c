@@ -12,7 +12,7 @@ int main(int argc, char *argv[])
         err_sys("fcntl error for fd %d", atoi(argv[1]));
 
     switch(val & O_ACCMODE) {
-    case O_RDONLYU:
+    case O_RDONLY:
         printf("read only");
         break;
 
