@@ -13,7 +13,7 @@ void division(int num, int *q, int *r)
 	return;
 }
 
-int main()
+int num_to_str()
 {
 	int i = 0, remainder, quotient;
 	int num;
@@ -41,8 +41,42 @@ int main()
 			pMacAddr[5], pMacAddr[4], pMacAddr[3],
 			pMacAddr[2], pMacAddr[1], pMacAddr[0]);
 
-
 	printf("dev_mac: %s\n", dev_mac);
+
+	return 0;
+}
+
+int test()
+{
+	/* you'd better initialize array at the beggining.
+	 * especailly when you handle strings 
+	 */
+#if 0
+	char buf[20] = {0};
+#else
+	char buf[20] = {0};
+#endif
+	int i;
+	for (i=0; i<20; i++)
+	{
+		printf("\nbuf[%d]:%c", i, buf[i]);
+	}
+	snprintf(buf, 5, "12345");
+	for (i=0; i<20; i++)
+	{
+		printf("\nbuf[%d]:%d", i, buf[i]);
+	}
+	//printf("\nbuf:%s", buf);
+	
+	return 0;
+}
+
+
+int main()
+{
+	//num_to_str();
+
+	test();
 
 	return 0;
 }
