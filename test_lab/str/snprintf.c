@@ -3,7 +3,10 @@
 
 #define MAX_MAC_LEN	18
 
-/* Number to String */ 
+/* 
+ * you can change the data format
+ * link number to string 
+ * */ 
 
 void division(int num, int *q, int *r)
 {
