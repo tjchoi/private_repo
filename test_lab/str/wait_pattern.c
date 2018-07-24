@@ -31,7 +31,6 @@ void test1()
 	int fd;
 	char buf[BUF_SIZE] = {0};
 
-
 	wait_pattern("ABC", 3);
 
 	printf("wait is over!\n");
