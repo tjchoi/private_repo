@@ -12,7 +12,7 @@ typedef struct list_node_ {
 	
 	struct list_node_ *next;
 
-}list_node;
+}list_node_t;
 
 typedef struct list_ {
 
@@ -22,17 +22,17 @@ typedef struct list_ {
 
 	void (*destroy) (void *data);
 
-	list_node *head;
+	list_node_t *head;
 
-	list_node *tail;
+	list_node_t *tail;
 
-}list;
+}list_t;
 
-void list_init(list *list, void(*destroy) (void *data));
-void list_destroy(list *list);
-int list_ins_prev(list *list, list_node *node, const void *data);
-int list_ins_next(list *list, list_node *node, const void *data);
-int list_delete(list *list, list_node *node, void **data);
+void list_init(list_t *list, void(*destroy) (void *data));
+void list_destroy(list_t *list);
+int list_ins_prev(list_t *list, list_node_t *node, const void *data);
+int list_ins_next(list_t *list, list_node_t *node, const void *data);
+int list_delete(list_t *list, list_node_t *node, void **data);
 
 #define list_size(list)		((list)->size)
 #define list_head(list)		((list)->head)

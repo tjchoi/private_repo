@@ -3,7 +3,7 @@
 
 #include "list.h"
 
-void list_init(list *list, void(*destroy) (void *data))
+void list_init(list_t *list, void(*destroy) (void *data))
 {
 	list->size = 0;
 	list->destroy = free;
@@ -13,7 +13,7 @@ void list_init(list *list, void(*destroy) (void *data))
 	return;
 }
 
-void list_destroy(list *list)
+void list_destroy(list_t *list)
 {
 	void *data;
 
@@ -22,19 +22,19 @@ void list_destroy(list *list)
 		if (list_delete(list, NULL, &data) == 0 && list->destroy != NULL)
 			list->destroy(data);
 	}
-	memset(list, 0, sizeof(list));
+	memset(list, 0, sizeof(list_t));
 
 	return ;
 }
 
-int list_ins_prev(list *list, list_node *node, const void *data)
+int list_ins_prev(list_t *list, list_node_t *node, const void *data)
 {
-	list_node *new_node;
+	list_node_t *new_node;
 
 	if (node == NULL && list_size(list) != 0)
 		return -1;
 	
-	new_node = (list_node *)malloc(sizeof(list_node));
+	new_node = (list_node_t *)malloc(sizeof(list_node_t));
 	if (new_node == NULL) return -1;
 
 	new_node->data = (void *)data;
@@ -46,23 +46,8 @@ int list_ins_prev(list *list, list_node *node, const void *data)
 		list->tail = new_node;
 		list->head = new_node;
 	}
-	else {
-#if 0
-		if (is_list_head(list, node))
-		{
-			new_node->next = node;
-			new_node->prev = NULL;
-			node->prev = new_node;
-			list->head = new_node;
-		}
-		else
-		{
-			new_node->next = node;
-			new_node->prev = node->prev;
-			node->prev->next = new_node;
-			node->prev = new_node;
-		}
-#else
+	else 
+	{
 		new_node->prev = node->prev;
 		new_node->next = node;
 
@@ -72,22 +57,20 @@ int list_ins_prev(list *list, list_node *node, const void *data)
 			node->prev->next = new_node;
 
 		node->prev = new_node;
-#endif
 	}
-
 	list->size++;
 
 	return 0;
 }
 
-int list_ins_next(list *list, list_node *node, const void *data)
+int list_ins_next(list_t *list, list_node_t *node, const void *data)
 {
-	list_node *new_node;
+	list_node_t *new_node;
 	
 	if (node == NULL && list_size(list) != 0)
 		return -1;
 
-	new_node = (list_node *)malloc(sizeof(list_node));
+	new_node = (list_node_t *)malloc(sizeof(list_node_t));
 	if (new_node == NULL) return -1;
 
 	new_node->data = (void *)data;
@@ -101,22 +84,6 @@ int list_ins_next(list *list, list_node *node, const void *data)
 	}
 	else
 	{
-#if 0
-		if (is_list_tail(list, node))
-		{
-			new_node->prev = node;
-			new_node->next = NULL;
-			node->next = new_node;
-			list->tail = new_node;
-		}
-		else
-		{
-			new_node->prev = node;
-			new_node->next = node->next;
-			node->next->prev = new_node;
-			node->prev = new_node;
-		}
-#else
 		new_node->prev = node;
 		new_node->next = node->next;
 
@@ -126,9 +93,7 @@ int list_ins_next(list *list, list_node *node, const void *data)
 			node->next->prev = new_node;
 
 		node->next = new_node;
-#endif
 	}
-
 	list->size++;
 
 	return 0;
@@ -141,12 +106,13 @@ int list_ins_next(list *list, list_node *node, const void *data)
  *	\param	**data	ptr to store dataa
  *	\return	0 on sucess or -1 on fail	
  */
-int list_delete(list *list, list_node *node, void **data)
+int list_delete(list_t *list, list_node_t *node, void **data)
 {
 	if (list_size(list) == 0 && node == NULL)
 		return -1;
 
-	*data = node->data;
+	if (data != NULL)
+		*data = node->data;
 #if 0
 	if (list_size(list) == 1) {
 		list->head = NULL;
