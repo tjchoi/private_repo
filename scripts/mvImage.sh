@@ -1,14 +1,28 @@
 #!/bin/sh
 
 date=`date +%G-%m-%d_%R`
-
+tftp="/tftpboot/tjchoi/XGS/"
 cur_path=`pwd`
+output_path="output/images"
+output_image="uImage"
+new_image_name="uImage_xgs_tjchoi_${date}"
+
+
+
+print_success()
+{
+	echo ""
+	echo "##############################################"
+	echo "##### Image Located in TFTP Successfully #####"
+	echo "##############################################"
+	mkimage -l ${tftp}${board}${revision}${output_image}
+}
 
 if [ "$1" = "asic" ];then
-	board="ASIC"
+	board="ASIC/"
 
 elif [ "$1" = "fpga" ];then
-	board="FPGA"
+	board="FPGA/"
 
 else
 	echo "ERROR : wrong agument"
@@ -16,22 +30,43 @@ else
 	exit
 fi
 
-cd output/images
+if ! [ $2 ];then
+	echo "ERROR : revision argument is empty"
+	exit
+fi
 
-mv uImage uImage_xgs_tjchoi_$date
+revision=`echo $2 | tr  '[a-z]' '[A-Z]'`
 
-mv uImage_xgs_tjchoi_$date /tftpboot/tjchoi/XGS/$board
+image_path="${tftp}${board}${revision}"
 
-cd /tftpboot/tjchoi/XGS/$board
+# If directory is not exist !
+if ! [ -d ${image_path} ];then  
+	echo "ERROR : wrong agument"
+	echo "${image_path} is not exist "
+	exit
+fi
 
-unlink uImage
+cd ${output_path}
 
-ln -s uImage_xgs_tjchoi_$date uImage
+# If output image file is not exist !
+if ! [ -e ${output_image} ];then
+	echo "ERROR : output image is not exist !"
+	exit
+fi
 
-cd $cur_path
+# change output image name to new name !
+mv ${output_image} ${new_image_name}
 
-ls -la /tftpboot/tjchoi/XGS/$board | grep 'uImage '
+# locate image in designated tftp path
+mv ${new_image_name} ${tftp}${board}${revision}
 
-mkimage -l /tftpboot/tjchoi/XGS/$board/uImage
+cd ${tftp}${board}${revision}
 
+unlink ${output_image}
+
+ln -s ${new_image_name} ${output_image}
+
+cd ${cur_path}
+
+ls -la ${tftp}${board}${revision} | grep 'uImage ' && print_success
 
