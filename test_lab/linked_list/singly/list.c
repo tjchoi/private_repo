@@ -60,7 +60,7 @@ int list_ins_next(list *list, list_node *node, const void *data)
 		new_node->next = node->next;
 		node->next = new_node;
 		
-		if (is_list_tail(node))
+		if (is_list_tail(list, node))
 			list->tail = new_node;
 	}
 

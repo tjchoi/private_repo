@@ -36,8 +36,7 @@ int list_del_next(list *list, list_node *node, void **data);
 #define list_tail(list)		((list)->tail)
 
 #define is_list_head(list, node)		((node) == (list)->head ? 1 : 0)
-#define is_list_tail(node)				((node)->next == NULL ? 1 : 0)
-//#define is_list_tail(list, node)		((list)->tail == node ? 1 : 0)
+#define is_list_tail(list, node)		((list)->tail == node ? 1 : 0)
 
 #define list_data(node)		((node)->data)
 #define list_next(node)		((node)->next)
